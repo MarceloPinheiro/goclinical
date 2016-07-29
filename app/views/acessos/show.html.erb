@@ -1,0 +1,42 @@
+<%- model_class = Acesso -%>
+<%  if can? :edit, Acesso
+        @edit = false
+    else
+        @edit = true
+    end
+    if can? :destroy, Acesso
+        @del = false
+    else
+        @del = true
+    end
+    if can? :new, Acesso
+        @new = false
+    else
+        @new = true
+    end
+%>
+
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:user_id) %>:</strong></dt>
+  <dd><%= @acesso.user.email %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:menusub_id) %>:</strong></dt>
+  <dd><%= @acesso.menusub.descricao %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:acao) %>:</strong></dt>
+  <dd><%= @acesso.acao %></dd>
+</dl>
+
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              acessos_path, :class => 'btn'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+    edit_acesso_path(@acesso), :disabled => @edit, :class => 'btn btn-primary' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              acesso_path(@acesso),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },:disabled => @del,
+              :class => 'btn btn-danger' %>
+</div>

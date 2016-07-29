@@ -1,0 +1,54 @@
+<%- model_class = Fornecedore -%>
+<%  if can? :edit, Fornecedore
+        @edit = false
+    else
+        @edit = true
+    end
+    if can? :destroy, Fornecedore
+        @del = false
+    else
+        @del = true
+    end
+    if can? :new, Fornecedore
+        @new = false
+    else
+        @new = true
+    end
+%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:fornecedor) %></th>
+      <th><%= model_class.human_attribute_name(:contato) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @fornecedores.each do |fornecedore| %>
+      <tr>
+        <td><%= link_to fornecedore.id, fornecedore_path(fornecedore) %></td>
+        <td><%= fornecedore.fornecedor %></td>
+        <td><%= fornecedore.contato %></td>
+        <td><%=l fornecedore.created_at %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+            edit_fornecedore_path(fornecedore),:disabled => @edit, :class => 'btn btn-primary btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      fornecedore_path(fornecedore),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Deseja Excluir?')) },:disabled => @del,
+                      :class => 'btn btn-danger btn-xs' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+  new_fornecedore_path,:disabled => @new,
+            :class => 'btn btn-primary' %>

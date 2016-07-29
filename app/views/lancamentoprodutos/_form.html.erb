@@ -1,0 +1,25 @@
+<%= form_for @lancamentoproduto, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="form-group">
+    <%= f.label :lancamento, :class => 'control-label' %>
+    <%= f.hidden_field :lancamento, :value => params[:lancamento] %>
+
+  </div>
+  <div class="form-group">
+    <%= f.label :produto, :class => 'control-label' %>
+    <%= f.collection_select(:produto,Produto.order(:descricao),:id,:descricao,{:prompt=>false},{:class => 'form-control'}) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :quantidade, :class => 'control-label' %>
+    <%= f.text_field :quantidade, :class => 'form-control valor' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :valor, :class => 'control-label' %>
+    <%= f.text_field :valor, :class => 'form-control valor' %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+      lancamentoprodutos_path(:lancamento => params[:lancamento]), :class => 'btn' %>
+  </div>
+<% end %>

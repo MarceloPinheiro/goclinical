@@ -1,0 +1,28 @@
+<%= form_for @lancamento, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="form-group">
+    <%= f.label :obra, :class => 'control-label' %>
+    <%= f.number_field :obra, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :fornecedor, :class => 'control-label' %>
+    <%= f.number_field :fornecedor, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :nota, :class => 'control-label' %>
+    <%= f.number_field :nota, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :valor, :class => 'control-label' %>
+    <%= f.text_field :valor, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :status, :class => 'control-label' %>
+    <%= f.number_field :status, :class => 'form-control' %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                lancamentos_path, :class => 'btn' %>
+  </div>
+<% end %>

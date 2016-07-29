@@ -1,0 +1,43 @@
+<%- model_class = Lancamento -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:id) %>:</strong></dt>
+  <dd><%= @lancamento.id %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:obra) %>:</strong></dt>
+  <dd><%= Obra.find(@lancamento.obra).obra %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:fornecedor) %>:</strong></dt>
+  <dd><%= Fornecedore.find(@lancamento.fornecedor).fornecedor %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:nota) %>:</strong></dt>
+  <dd><%= @lancamento.nota %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:valor) %>:</strong></dt>
+  <dd><%= number_to_currency(@lancamento.valor) %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:status) %>:</strong></dt>
+  <% if(@lancamento.status == 0)
+    @status = 'Sem Aprovação'
+    @cstatus = 'status_v'
+    @disable = false
+  else
+    @status = 'Aprovado'
+    @cstatus = 'status_a'
+    @disable = true
+  end %>
+<dd class="<%= @cstatus%>"><%= @status %></dd>
+</dl>
+
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              lancamentos_path, :class => 'btn'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+    edit_lancamento_path(@lancamento), :class => 'btn btn-primary', :disabled => @disable %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              lancamento_path(@lancamento),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger', :disabled => @disable %>
+  <%= link_to 'Produtos',
+    lancamentoprodutos_path(:lancamento => @lancamento.id), :class => 'btn btn-primary' %>
+  <%= link_to 'Pagamentos', pagamentos_path(:lancamento => @lancamento.id), :class => 'btn btn-warning' %>
+</div>

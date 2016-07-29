@@ -1,0 +1,58 @@
+<%- model_class = Acesso -%>
+<%  if can? :edit, Acesso
+      @edit = false
+    else
+      @edit = true
+    end
+    if can? :destroy, Acesso
+      @del = false
+    else
+      @del = true
+    end
+    if can? :new, Acesso
+      @new = false
+    else
+      @new = true
+    end
+%>
+
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:user_id) %></th>
+      <th><%= model_class.human_attribute_name(:menusub_id) %></th>
+      <th><%= model_class.human_attribute_name(:acao) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @acessos.each do |acesso| %>
+      <tr>
+        <td><%= link_to acesso.id, acesso_path(acesso) %></td>
+        <td><%= acesso.user.email %></td>
+        <td><%= acesso.menusub.descricao %></td>
+        <td><%= acesso.acao %></td>
+        <td><%=l acesso.created_at %></td>
+        <td>
+
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+            edit_acesso_path(acesso),:disabled => @edit,:class => 'btn btn-primary btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      acesso_path(acesso),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :disabled => @del,:class => 'btn btn-danger btn-xs' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+  new_acesso_path,:disabled=>@new,
+            :class => 'btn btn-primary' %>

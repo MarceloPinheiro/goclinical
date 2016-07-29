@@ -1,0 +1,21 @@
+<%= form_for @pagamento, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="form-group">
+    Faltar Pagar:
+    <%= number_to_currency(Lancamento.find(params[:lancamento]).valor - Pagamento.where(lancamento:params[:lancamento]).sum('valor')) %>
+    <%= f.hidden_field :lancamento_id, :value => params[:lancamento] %>
+  </div>
+  <div class="form-group">
+    <%= f.label :vencimento, :class => 'control-label' %>
+    <%= f.date_select :vencimento, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :valor, :class => 'control-label' %>
+    <%= f.text_field :valor, :class => 'form-control valor' %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+      pagamentos_path(:lancamento => params[:lancamento]), :class => 'btn' %>
+  </div>
+<% end %>

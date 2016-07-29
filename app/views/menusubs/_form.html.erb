@@ -1,0 +1,25 @@
+<%= form_for @menusub, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="form-group">
+    <%= f.label :menu_id, :class => 'control-label' %>
+    <%= f.collection_select(:menu_id, Menu.order(:descricao), :id, :descricao,{}, {:class => 'form-control'}) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :descricao, :class => 'control-label' %>
+    <%= f.text_field :descricao, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :link, :class => 'control-label' %>
+    <%= f.text_field :link, :class => 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :modulo, :class => 'control-label' %>
+    <%= f.text_field :modulo, :class => 'form-control' %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                menusubs_path, :class => 'btn' %>
+  </div>
+<% end %>

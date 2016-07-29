@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  obra: MyString
+  inicio: 2014-12-12
+  fim: 2014-12-12
+
+two:
+  obra: MyString
+  inicio: 2014-12-12
+  fim: 2014-12-12

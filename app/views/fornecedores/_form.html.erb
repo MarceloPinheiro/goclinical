@@ -1,0 +1,16 @@
+<%= form_for @fornecedore, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="form-group">
+    <%= f.label :fornecedor, :class => 'control-label' %>
+    <%= f.text_field :fornecedor, :class => 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :contato, :class => 'control-label' %>
+    <%= f.text_field :contato, :class => 'form-control' %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                fornecedores_path, :class => 'btn' %>
+  </div>
+<% end %>

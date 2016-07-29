@@ -1,0 +1,24 @@
+<%= form_for @orcamento, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="form-group">
+    <%= f.label :obra, :class => 'control-label' %>
+    <%= f.collection_select(:obra,Obra.order(:obra),:id, :obra,{:prompt=>false}, {:class => 'col-lg-10 form-control'}) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :valor, :class => 'control-label' %>
+    <%= f.text_field :valor, :class => 'form-control valor' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :mes, :class => 'control-label' %>
+    <%= f.select :mes, {"Janeiro"=>1,"Fevereiro"=>2,"Março"=>3,"Abril"=>4,"Maio"=>5,"Junho"=>6,"Julho"=>7,"Agosto"=>8,"Setembro"=>9,"Outubro"=>10,"Novembro"=>11,"Dezembro"=>12},{}, {:class => 'form-control'} %>
+  </div>
+  <div class="form-group">
+    <%= f.label :ano, :class => 'control-label' %>
+    <%= f.select :ano, {2014=>2014,2015=>2015,2016=>2016,2017=>2017,2018=>2018,2019=>2019,2020=>2020 },{}, {:class => 'form-control'} %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                orcamentos_path, :class => 'btn' %>
+  </div>
+<% end %>

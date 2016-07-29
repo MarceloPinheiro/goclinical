@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for?(:title) ? yield(:title) : "gestao" %></title>
+    <%= csrf_meta_tags %>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+
+    <%= stylesheet_link_tag "flatly", :media => "all" %>
+
+    <%= yield(:page_stylesheet) if content_for?(:page_stylesheet) %>
+
+  </head>
+  <body>
+
+    <br>
+    <br>
+
+    <div class='panel-body jumbotron'>
+    <%= yield %>
+    </div>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <% if(user_signed_in?) %>
+          <ul class="nav navbar-nav">
+            <li class='active'><a href="/inicio/index">Inicio</a></li>
+            <% @menu = Menu.all %>
+            <% @menu.each do |menu|%>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= menu.descricao %><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <% @submenu = Menusub.order("descricao").where("menu_id=?",menu.id) %>
+                <% @submenu.each do |sub| %>
+                  <li><a href=<%= sub.link %>><%= sub.descricao  %></a></li>
+
+                <%end%>
+              </ul>
+            </li>
+            <%end%>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><%= current_user.email %><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Alterar Senha', edit_user_registration_path %></li>
+                <li><%= link_to 'Sair', destroy_user_session_path, method: :delete %></li>
+              </ul>
+            </li>
+          </ul>
+        <%end%>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <%= render 'layouts/footer' %>
+
+
+    <!-- Javascripts
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <%= javascript_include_tag "flatly" %>
+    <%= yield(:page_javascript) if content_for?(:page_javascript) %>
+  </body>
+</html>

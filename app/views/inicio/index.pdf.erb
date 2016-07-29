@@ -1,0 +1,63 @@
+<%- model_class = Lancamento -%>
+<div class='page-header'>
+  <h1>Gastos das Obras</h1>
+</div>
+<hr>
+
+Data de Referência <%=l @data %>
+
+<table class='table table-striped'>
+  <thead>
+    <tr>
+      <th>Obra</th>
+      <th>Orçamento</th>
+      <th>Gastos</th>
+    </tr>
+  </thead>
+  <% @Total_Orcado = @Total_Gasto = 0.00 %>
+  <tbody>
+    <% @obras.each do |obra| %>
+      <% @Valor_Orcamento = @Valor_Gasto = 0.00 %>
+      <% @orcamentos = Orcamento.where('obra=? and mes=? and ano=?',obra.id,@mes,@ano) %>
+       <% @orcamentos.each do |orcamento| %>
+       <% @Valor_Orcamento = orcamento.valor  %>
+      <% end %>
+      <% @inicio_mes = Date.today.beginning_of_month.change(year: @ano,month: @mes)  %>
+       <% @fim_mes = Date.new(@ano,@mes,Time.days_in_month(@mes,@ano)) %>
+       <% @pagamentos = Pagamento.joins(:lancamento).where('lancamentos.obra=? and vencimento between ? and ?',obra.id,@inicio_mes,@fim_mes) %>
+       <% @pagamentos.each do |pagamento| %>
+         <% @Valor_Gasto = @Valor_Gasto + pagamento.valor %>
+       <% end %>
+       <% if(((@Valor_Orcamento*0.8) < @Valor_Gasto) && (@Valor_Orcamento >= @Valor_Gasto) )
+            @class = 'warning'
+          elsif(@Valor_Orcamento < @Valor_Gasto)
+            @class = 'danger'
+          else
+            @class = ''
+          end
+        %>
+      <tr class=<%= @class %>>
+        <td><%= obra.obra %></td>
+        <td><%= number_to_currency(@Valor_Orcamento) %></td>
+        <td><%= number_to_currency(@Valor_Gasto)  %> </td>
+      </tr>
+
+      <% @Total_Orcado = @Total_Orcado + @Valor_Orcamento %>
+      <% @Total_Gasto = @Total_Gasto + @Valor_Gasto %>
+    <% end %>
+    <% if(@Total_Orcado > @Total_Gasto)
+        @class_f = 'info'
+    elsif(((@Total_Orcado*0.8)<@Total_Gasto) && (@Total_Orcado >= @Total_Gasto) )
+        @class_f = 'warning'
+       else
+        @class_f = 'danger'
+       end
+     %>
+   <tr class=<%= @class_f %>>
+      <td>Totais:</td>
+      <td><%= number_to_currency(@Total_Orcado) %></td>
+      <td><%= number_to_currency(@Total_Gasto) %></td>
+    </tr>
+  </tbody>
+</table>
+

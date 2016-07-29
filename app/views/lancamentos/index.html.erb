@@ -1,0 +1,55 @@
+<%- model_class = Lancamento -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:obra) %></th>
+      <th><%= model_class.human_attribute_name(:fornecedor) %></th>
+      <th><%= model_class.human_attribute_name(:nota) %></th>
+      <th><%= model_class.human_attribute_name(:valor) %></th>
+      <th><%= model_class.human_attribute_name(:status) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @lancamentos.each do |lancamento| %>
+      <tr>
+        <td><%= link_to lancamento.id, lancamento_path(lancamento) %></td>
+        <td><%= Obra.find(lancamento.obra).obra %></td>
+        <td><%= Fornecedore.find(lancamento.fornecedor).fornecedor %></td>
+        <td><%= lancamento.nota %></td>
+        <td><%= number_to_currency(lancamento.valor) %></td>
+        <% if(lancamento.status == 0)
+              @status = 'Sem Aprovação'
+              @cstatus = 'status_v'
+              @disable = false
+           else
+              @status = 'Aprovado'
+              @cstatus = 'status_a'
+              @disable = true
+           end
+        %>
+        <td class='<%= @cstatus  %>'><%= @status %></td>
+        <td><%=l lancamento.created_at %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+            edit_lancamento_path(lancamento), :class => 'btn btn-primary btn-xs', :disabled => @disable %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      lancamento_path(lancamento),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-danger btn-xs', :disabled => @disable %>
+                    <%= link_to 'Detalhes',aprovacao_path(:lancamento=>lancamento.id,:voltar=>lancamentos_path),:class => 'btn btn-primary btn-xs' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_lancamento_path,
+            :class => 'btn btn-primary' %>

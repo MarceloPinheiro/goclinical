@@ -1,0 +1,40 @@
+
+<%- model_class = Lancamento -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:obra) %></th>
+      <th><%= model_class.human_attribute_name(:fornecedor) %></th>
+      <th><%= model_class.human_attribute_name(:nota) %></th>
+      <th><%= model_class.human_attribute_name(:valor) %></th>
+      <th><%= model_class.human_attribute_name(:status) %></th>
+     </tr>
+  </thead>
+  <tbody>
+    <% @lancamentos.each do |lancamento| %>
+      <tr>
+        <td><%= lancamento.id %></td>
+        <td><%= Obra.find(lancamento.obra).obra %></td>
+        <td><%= Fornecedore.find(lancamento.fornecedor).fornecedor %></td>
+        <td><%= lancamento.nota %></td>
+        <td><%= number_to_currency(lancamento.valor) %></td>
+        <% if(lancamento.status == 0)
+              @status = 'Sem Aprovação'
+              @cstatus = 'status_v'
+           else
+              @status = 'Aprovado'
+              @cstatus = 'status_a'
+           end
+        %>
+        <td class='<%= @cstatus  %>'><%= @status %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

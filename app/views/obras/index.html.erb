@@ -1,0 +1,56 @@
+<%- model_class = Obra -%>
+<%  if can? :edit, Acesso
+        @edit = false
+    else
+        @edit = true
+    end
+    if can? :destroy, Acesso
+        @del = false
+    else
+        @del = true
+    end
+    if can? :new, Acesso
+        @new = false
+    else
+        @new = true
+    end
+%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:obra) %></th>
+      <th><%= model_class.human_attribute_name(:inicio) %></th>
+      <th><%= model_class.human_attribute_name(:fim) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @obras.each do |obra| %>
+      <tr>
+        <td><%= link_to obra.id, obra_path(obra) %></td>
+        <td><%= obra.obra %></td>
+        <td><%=l obra.inicio %></td>
+        <td><%=l obra.fim %></td>
+        <td><%=l obra.created_at %></td>
+        <td>
+          <%= link_to t('.editar', :default => t("helpers.links.edit")),
+            edit_obra_path(obra),:disabled => @edit, :class => 'btn btn-primary btn-xs' %>
+          <%= link_to t('.excluir', :default => t("helpers.links.destroy")),
+                      obra_path(obra),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Deseja Excluir?')) },:disabled => @del,
+                      :class => 'btn btn-danger btn-xs' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+  new_obra_path,:disabled => @new,
+            :class => 'btn btn-primary' %>

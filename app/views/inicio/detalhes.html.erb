@@ -1,0 +1,45 @@
+<%- model_class = Pagamento -%>
+<div class='page-header'>
+  <h3>Detalhes dos Vencimentos</h3>
+</div>
+<% @obra = params[:obra] %>
+<% @inicio = params[:inicio].split('-') %>
+<% @fim = params[:fim].split('-') %>
+<% @Datai = Date.new(@inicio[0].to_i,@inicio[1].to_i,@inicio[2].to_i) %>
+<% @Dataf = Date.new(@fim[0].to_i,@fim[1].to_i,@fim[2].to_i)  %>
+
+<strong>Obra: </strong>&nbsp;<%= Obra.find(@obra.to_i).obra %>
+<br>
+<strong>Data de Referência:</strong>&nbsp;<%=l @Datai %> até <%=l @Dataf  %>
+
+<table class='table table-striped'>
+  <thead>
+    <tr>
+      <th>Fornecedor</th>
+      <th>Lançamento</th>
+      <th>Total do Lançamento</th>
+      <th>Vencimento</th>
+      <th>Valor do Vencimento</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @pagamentos = Pagamento.joins(:lancamento).where('lancamentos.obra=? and vencimento between ? and ?',@obra.to_i,@Datai,@Dataf)  %>
+    <% @Total = 0.00 %>
+    <% @pagamentos.each do |pagamento| %>
+      <% @Total += pagamento.valor %>
+      <tr>
+        <td><%= Fornecedore.find(pagamento.lancamento.fornecedor).fornecedor %>
+        <td><%= pagamento.lancamento_id %></td>
+        <td><%= number_to_currency(pagamento.lancamento.valor) %></td>
+        <td><%=l pagamento.vencimento %></td>
+        <td><%= number_to_currency(pagamento.valor) %></td>
+      </tr>
+    <%end%>
+    <tr class='info'>
+      <td colspan=4><strong>Total:</strong></td>
+      <td><%= number_to_currency(@Total) %></td>
+    </tr>
+  </tbody>
+</table>
+
+

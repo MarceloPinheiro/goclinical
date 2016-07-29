@@ -1,0 +1,84 @@
+<%- model_class = Lancamento -%>
+<div class='page-header'>
+  <h1>Gastos das Obras</h1>
+</div>
+<hr>
+<%= form_for(:inicio, :method => "post") do |f| %>
+  <%= f.label :Data, :class => 'control-label' %>
+  <%= f.date_select :dataR,{:class => 'form-control'} %>
+
+  <%= f.submit 'Filtar',  :class => 'btn btn-info btn-xs' %>
+<% end %>
+
+<table class='table table-striped'>
+  <thead>
+    <tr>
+      <th>Obra</th>
+      <th>Orçamento</th>
+      <th>Gastos</th>
+      <th>Saldo</th>
+      <th>Bloqueado</th>
+      <th></th>
+    </tr>
+  </thead>
+  <% @Total_Orcado = @Total_Gasto = @Total_Bloqueio = @Total_Saldo = 0.00 %>
+  <tbody>
+    <% @obras.each do |obra| %>
+      <% @Valor_Orcamento = @Valor_Gasto = @Valor_Bloqueio = @Valor_Saldo = 0.00 %>
+      <% @orcamentos = Orcamento.where('obra=? and mes=? and ano=?',obra.id,@mes,@ano) %>
+       <% @orcamentos.each do |orcamento| %>
+       <% @Valor_Orcamento = orcamento.valor  %>
+      <% end %>
+      <% @inicio_mes = Date.today.beginning_of_month.change(year: @ano,month: @mes)  %>
+       <% @fim_mes = Date.new(@ano,@mes,Time.days_in_month(@mes,@ano)) %>
+       <% @pagamentos = Pagamento.joins(:lancamento).where('lancamentos.obra=? and vencimento between ? and ?',obra.id,@inicio_mes,@fim_mes).select('pagamentos.valor,lancamentos.status') %>
+       <% @query = 'obra='+obra.id.to_s+'&inicio='+@inicio_mes.to_s+'&fim='+@fim_mes.to_s %>
+       <% @pagamentos.each do |pagamento| %>
+         <% if(pagamento.status == 0) %>
+           <% @Valor_Bloqueio = @Valor_Bloqueio + pagamento.valor %>
+         <%else%>
+           <% @Valor_Gasto = @Valor_Gasto + pagamento.valor %>
+         <%end%>
+       <% end %>
+       <% if(((@Valor_Orcamento*0.8) < @Valor_Gasto) && (@Valor_Orcamento >= @Valor_Gasto) )
+            @class = 'text-warning'
+          elsif(@Valor_Orcamento < @Valor_Gasto)
+            @class = 'text-danger'
+          else
+            @class = ''
+          end
+        %>
+      <% @Valor_Saldo = @Valor_Orcamento - @Valor_Gasto %>
+      <tr class=<%= @class %>>
+        <td><%= obra.obra %></td>
+        <td><%= number_to_currency(@Valor_Orcamento) %></td>
+        <td><%= number_to_currency(@Valor_Gasto)  %> </td>
+        <td><%= number_to_currency(@Valor_Saldo) %> </td>
+        <td class='text-danger'><%= number_to_currency(@Valor_Bloqueio) %></td>
+        <td><%= link_to 'Detalhes','/inicio/detalhes.pdf?'+@query.to_s,:class => 'btn btn-primary btn-xs', :target => '_blank' %></td>
+      </tr>
+
+      <% @Total_Orcado = @Total_Orcado + @Valor_Orcamento %>
+      <% @Total_Gasto = @Total_Gasto + @Valor_Gasto %>
+      <% @Total_Saldo = @Total_Saldo + @Valor_Saldo %>
+      <% @Total_Bloqueio = @Total_Bloqueio + @Valor_Bloqueio %>
+    <% end %>
+    <% if(@Total_Orcado > @Total_Gasto)
+        @class_f = 'text-info'
+    elsif(((@Total_Orcado*0.8)<@Total_Gasto) && (@Total_Orcado >= @Total_Gasto) )
+        @class_f = 'text-warning'
+       else
+        @class_f = 'text-danger'
+       end
+     %>
+   <tr class=<%= @class_f %>>
+      <td>Totais:</td>
+      <td><%= number_to_currency(@Total_Orcado) %></td>
+      <td><%= number_to_currency(@Total_Gasto) %></td>
+      <td><%= number_to_currency(@Total_Saldo) %></td>
+      <td class='text-danger'><%= number_to_currency(@Total_Bloqueio) %></td>
+    </tr>
+  </tbody>
+</table>
+<%= link_to 'Imprimir','/inicio/index.pdf?inicio[dataR]='+@data.to_s,:class => 'btn btn-primary', :target => '_blank' %>
+

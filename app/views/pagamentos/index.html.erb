@@ -1,0 +1,74 @@
+<%- model_class = Pagamento -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:lancamento) %></th>
+      <th><%= model_class.human_attribute_name(:vencimento) %></th>
+      <th><%= model_class.human_attribute_name(:valor) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if(Lancamento.find(params[:lancamento]).status == 0)
+          @disable = false
+        else
+          @disable = true
+        end
+      %>
+    <% @pagamentos.each do |pagamento| %>
+      <tr>
+        <td><%= link_to pagamento.id, pagamento_path(pagamento) %></td>
+        <td><%= pagamento.lancamento_id %></td>
+        <td><%=l pagamento.vencimento %></td>
+        <td><%= number_to_currency(pagamento.valor) %></td>
+        <td><%=l pagamento.created_at %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+            edit_pagamento_path(pagamento,:lancamento => pagamento.lancamento), :class => 'btn btn-primary btn-xs',:disabled=>@disable %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+            pagamentos_path(pagamento,:lancamento => pagamento.lancamento),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-danger btn-xs',:disabled=>@disable %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+Total da Compra: <%= number_to_currency(Lancamento.find(params[:lancamento]).valor) %>
+<br>
+Total do Pagamento: <%= number_to_currency(@pagamentos.sum('valor')) %>
+<br>
+<%
+  if(Lancamento.find(params[:lancamento]).valor > @pagamentos.sum('valor'))
+    @novo = false;
+    @lp = Lancamento.find(params[:lancamento]).valor - @pagamentos.sum('valor')
+    @mensagem = '<div class="alert alert-danger">'
+    @mensagem += 'Faltar Lançar Pagamentos no Valor de '+number_to_currency(@lp)
+    @mensagem += '</div>'
+  else
+    @novo = true
+    @mensagem = ''
+  end
+%>
+
+<% if(Lancamento.find(params[:lancamento]).status == 0 && @novo != true)
+     @novo = false
+
+    else
+      @novo = true
+
+    end
+  %>
+
+  <%= @mensagem.html_safe  %>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+  new_pagamento_path(:lancamento => params[:lancamento]), :disabled => @novo,
+  :class => 'btn btn-primary' %>
+<%= link_to 'Voltar ao Lançamento', lancamento_path(params[:lancamento]), :class => 'btn btn-success' %>

@@ -1,0 +1,2 @@
+module MenusubsHelper
+end

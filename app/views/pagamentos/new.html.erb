@@ -1,0 +1,19 @@
+<%- model_class = Pagamento -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => t('helpers.titles.new', :model => model_class.model_name.human,
+                                 :default => "New #{model_class.model_name.human}") %></h1>
+</div>
+<% @Valor = Lancamento.find(params[:lancamento]).valor %>
+<%= form_for :pagamento,:method => 'get' do |f| %>
+  <%= f.hidden_field :lancamento, :value => params[:lancamento] %>
+  <%= f.label 'Valor Total', :class => 'control-label' %>
+  <%= f.hidden_field :total, :value => @Valor %>
+  <%= f.label number_to_currency(@Valor), :class => 'form-control' %>
+  <%= f.label 'Parcelas', :class => 'control-label' %>
+  <%= f.number_field :parcelas, :class => 'form-control' %>
+  <%= f.label 'Primeiro Vencimento', :class => 'control-label' %>
+  <%= f.date_select :datav, {},{:class => 'form-control'} %>
+  <%= f.label 'Prazo Médio', :class => 'control-label' %>
+  <%= f.number_field :prazo, :class => 'form-control' %>
+  <%= f.submit 'Gerar', :class => 'btn btn-primary' %>
+<% end %>

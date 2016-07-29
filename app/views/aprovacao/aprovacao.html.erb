@@ -1,0 +1,57 @@
+<%- model_class = Lancamento  -%>
+<div class='page-header'>
+  <h2>Detalhes do Lançamento</h2>
+</div>
+
+<dl class='dl-horizontal'>
+  <dt><strong><%= model_class.human_attribute_name(:lancamento) %>:</strong></dt>
+  <dd><%= @lancamento.id %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:obra) %>:</strong></dt>
+  <dd><%= Obra.find(@lancamento.obra).obra %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:fornecedor) %>:</strong></dt>
+  <dd><%= Fornecedore.find(@lancamento.fornecedor).fornecedor %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:valor) %>:</strong></dt>
+  <dd><%= number_to_currency(@lancamento.valor) %></strong></dt>
+</dl>
+<hr>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:produto) %></th>
+      <th><%= model_class.human_attribute_name(:quantidade) %></th>
+      <th><%= model_class.human_attribute_name(:valor) %></th>
+      <th>Valor Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @produtos.each do |produto| %>
+      <tr>
+        <td><%= Produto.find(produto.produto).descricao %></td>
+        <td><%= produto.quantidade %></td>
+        <td><%= number_to_currency(produto.valor) %></td>
+        <td><%= number_to_currency(produto.valor * produto.quantidade) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<hr>
+<table class='table table-striped'>
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:vencimento) %></th>
+      <th><%= model_class.human_attribute_name(:valor) %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @pagamentos.each do |pagamento| %>
+      <tr>
+        <td><%=l pagamento.vencimento %></td>
+        <td><%= number_to_currency(pagamento.valor) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<hr>
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),params[:voltar], :class => 'btn btn-default' %>&nbsp;&nbsp;<%= link_to 'Imprimir','/aprovacao/aprovacao.pdf?lancamento='+@lancamento.id.to_s, :class => 'btn btn-info', :target => '_blank' %>
+</div>
